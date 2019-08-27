@@ -16,10 +16,10 @@
 #error "NEWHOPE_N must be either 512 or 1024"
 #endif
 
-int crypto_kem_keypair(unsigned char *pk, unsigned char *sk);
+int crypto_kem_keypair_nh(unsigned char *pk, unsigned char *sk);
 
-int crypto_kem_enc(unsigned char *ct, unsigned char *ss, const unsigned char *pk);
+int crypto_kem_enc_nh(unsigned char *ct, unsigned char *ss, const unsigned char *pk);
 
-int crypto_kem_dec(unsigned char *ss, const unsigned char *ct, const unsigned char *sk);
+int crypto_kem_dec_nh(unsigned char *ss, const unsigned char *ct, const unsigned char *sk);
 
 #endif
