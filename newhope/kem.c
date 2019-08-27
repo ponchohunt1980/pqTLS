@@ -18,7 +18,7 @@
 *
 * Returns 0 (success)
 **************************************************/
-int crypto_kem_keypair(unsigned char *pk, unsigned char *sk)
+int crypto_kem_keypair_nh(unsigned char *pk, unsigned char *sk)
 {
   cpapke_keypair(pk, sk);                                                        /* First put the actual secret key into sk */
 
@@ -26,7 +26,7 @@ int crypto_kem_keypair(unsigned char *pk, unsigned char *sk)
 }
 
 /*************************************************
-* Name:        crypto_kem_enc
+* Name:        crypto_kem_enc_nh
 *
 * Description: Generates cipher text and shared
 *              secret for given public key
@@ -37,7 +37,7 @@ int crypto_kem_keypair(unsigned char *pk, unsigned char *sk)
 *
 * Returns 0 (success)
 **************************************************/
-int crypto_kem_enc(unsigned char *ct, unsigned char *ss, const unsigned char *pk)
+int crypto_kem_enc_nh(unsigned char *ct, unsigned char *ss, const unsigned char *pk)
 {
   unsigned char buf[2*NEWHOPE_SYMBYTES];
 
@@ -53,7 +53,7 @@ int crypto_kem_enc(unsigned char *ct, unsigned char *ss, const unsigned char *pk
 
 
 /*************************************************
-* Name:        crypto_kem_dec
+* Name:        crypto_kem_dec_nh
 *
 * Description: Generates shared secret for given
 *              cipher text and private key
@@ -64,7 +64,7 @@ int crypto_kem_enc(unsigned char *ct, unsigned char *ss, const unsigned char *pk
 *
 * Returns 0 (success)
 **************************************************/
-int crypto_kem_dec(unsigned char *ss, const unsigned char *ct, const unsigned char *sk)
+int crypto_kem_dec_nh(unsigned char *ss, const unsigned char *ct, const unsigned char *sk)
 {
   cpapke_dec(ss, ct, sk);
 
