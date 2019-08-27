@@ -7,7 +7,7 @@
 
 /****** -> NewHope ******/
 #include "newhope/rng.h"
-#iniclude "newhope/api.h"
+#include "newhope/api.h"
 
 
 /****** NewHope <- ******/
