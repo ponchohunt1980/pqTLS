@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include "api.h"
-#include "poly.h"
-#include "rng.h"
-#include "fips202.h"
+#include "apinh.h"
+#include "polynh.h"
+#include "rngnh.h"
+#include "fips202nh.h"
 
 /*************************************************
 * Name:        encode_pk
