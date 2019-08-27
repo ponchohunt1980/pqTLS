@@ -6,6 +6,9 @@
 #define NBYTES  1024
 
 /****** -> NewHope ******/
+#include "newhope/rng.h"
+#iniclude "newhope/api.h"
+
 
 /****** NewHope <- ******/
 
