@@ -9,11 +9,8 @@
 #include "newhope/rng.h"
 #include "newhope/api.h"
 
-unsigned char pk[]
-
 /****** NewHope <- ******/
 
-/***** Sign *****/
 /****** -> Dilithium ******/
 #include "dilithium1aes/randombytes.h"
 #include "dilithium1aes/params.h"
@@ -21,6 +18,16 @@ unsigned char pk[]
 
 #define MLEN 59
 
+
+void newhopekeygen(int sock)
+{
+    unsigned char pk[CRYPTO_PUBLICKEYBYTES], sk[CRYPTO_SECRETKEYBYTES];
+}
+
+void newhopegeneral ()
+{
+    
+}
 // opt = 0: KeyGen, Sign; opt = 1: Verification
 void dilithium1(int sock, int opt)
 {
