@@ -9,6 +9,7 @@
 #include "newhope/rng.h"
 #include "newhope/api.h"
 
+unsigned char pk[]
 
 /****** NewHope <- ******/
 
