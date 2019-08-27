@@ -22,9 +22,15 @@
 void newhopekeygen(int sock)
 {
     unsigned char pk[CRYPTO_PUBLICKEYBYTES], sk[CRYPTO_SECRETKEYBYTES];
+    int flag;
+    
+    if (flag = crypto_kem_keypair(pk, sk) !=0)
+    {
+        printf("crypto_kem_keypair returned <%d>\n", flag);
+    }
 }
 
-void newhopegeneral ()
+void newhope1 (int sock, int opt)
 {
     
 }
