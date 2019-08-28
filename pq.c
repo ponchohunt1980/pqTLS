@@ -8,7 +8,6 @@
 /****** -> NewHope ******/
 #include "newhope/rng.h"
 #include "newhope/api.h"
-
 /****** NewHope <- ******/
 
 /****** -> Dilithium ******/
@@ -18,43 +17,6 @@
 
 #define MLEN 59
 
-
-void newhopekeygen()
-{
-    int flag;
-    
-    if (flag = crypto_kem_keypair(pk, sk) !=0)
-    {
-        printf("crypto_kem_keypair returned <%d>\n", flag);
-    }
-}
-
-void newhope_enc ()
-{
-    int flag;
-    
-    if (flag = crypto_kem_enc(ct, ss, pk) != 0)
-    {
-        printf("crypto_kem_enc returned <%d>\n", flag);
-    }
-}
-
-void newhope_dec()
-{
-    int flag;
-    
-    if (flag = crypto_kem_dec(ss1, ct, sk) != 0)
-    {
-        printf("crypto_kem_dec returned <%d>\n", flag);
-    }
-}
-
-void newhope1 (int sock, int opt)
-{
-    unsigned char pk[CRYPTO_PUBLICKEYBYTES], sk[CRYPTO_SECRETKEYBYTES];
-    unsigned char ct[CRYPTO_CIPHERTEXTBYTES], ss[CRYPTO_BYTES], ss1[CRYPTO_BYTES];
-    
-}
 // opt = 0: KeyGen, Sign; opt = 1: Verification
 void dilithium1(int sock, int opt)
 {
@@ -129,6 +91,47 @@ void dilithium1(int sock, int opt)
     return;
 }
 /****** Dilithium <- ******/
+
+/****** New Hope <- ******/
+void newhopekeygen(unsigned char pk, unsigned char sk)
+{
+    int flag;
+    
+    if (flag = crypto_kem_keypair(pk, sk) !=0)
+    {
+        printf("crypto_kem_keypair returned <%d>\n", flag);
+    }
+}
+
+void newhope_enc (unsigned char ct, unsigned char ss, unsigned char pk)
+{
+    int flag;
+    
+    if (flag = crypto_kem_enc(ct, ss, pk) != 0)
+    {
+        printf("crypto_kem_enc returned <%d>\n", flag);
+    }
+}
+
+void newhope_dec(unsigned char ss1, unsigned char ct, unsigned char pk)
+{
+    int flag;
+    
+    if (flag = crypto_kem_dec(ss1, ct, sk) != 0)
+    {
+        printf("crypto_kem_dec returned <%d>\n", flag);
+    }
+}
+
+void newhope1 (int sock, int opt)
+{
+    unsigned char pk[CRYPTO_PUBLICKEYBYTES], sk[CRYPTO_SECRETKEYBYTES];
+    unsigned char ct[CRYPTO_CIPHERTEXTBYTES], ss[CRYPTO_BYTES], ss1[CRYPTO_BYTES];
+    
+    
+    
+}
+/****** New Hope <- ******/
 
 /****** -> TLS ******/
 void TLS(int sock, char *opt, int flag)
