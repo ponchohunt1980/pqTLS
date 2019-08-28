@@ -19,9 +19,8 @@
 #define MLEN 59
 
 
-void newhopekeygen(int sock)
+void newhopekeygen()
 {
-    unsigned char pk[CRYPTO_PUBLICKEYBYTES], sk[CRYPTO_SECRETKEYBYTES];
     int flag;
     
     if (flag = crypto_kem_keypair(pk, sk) !=0)
@@ -30,8 +29,30 @@ void newhopekeygen(int sock)
     }
 }
 
+void newhope_enc ()
+{
+    int flag;
+    
+    if (flag = crypto_kem_enc(ct, ss, pk) != 0)
+    {
+        printf("crypto_kem_enc returned <%d>\n", flag);
+    }
+}
+
+void newhope_dec()
+{
+    int flag;
+    
+    if (flag = crypto_kem_dec(ss1, ct, sk) != 0)
+    {
+        printf("crypto_kem_dec returned <%d>\n", flag);
+    }
+}
+
 void newhope1 (int sock, int opt)
 {
+    unsigned char pk[CRYPTO_PUBLICKEYBYTES], sk[CRYPTO_SECRETKEYBYTES];
+    unsigned char ct[CRYPTO_CIPHERTEXTBYTES], ss[CRYPTO_BYTES], ss1[CRYPTO_BYTES];
     
 }
 // opt = 0: KeyGen, Sign; opt = 1: Verification
