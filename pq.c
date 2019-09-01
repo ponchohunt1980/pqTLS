@@ -122,15 +122,6 @@ void newhope_dec(unsigned char ss1, unsigned char ct, unsigned char pk)
         printf("crypto_kem_dec returned <%d>\n", flag);
     }
 }
-
-void newhope1 (int sock, int opt)
-{
-    unsigned char pk[CRYPTO_PUBLICKEYBYTES], sk[CRYPTO_SECRETKEYBYTES];
-    unsigned char ct[CRYPTO_CIPHERTEXTBYTES], ss[CRYPTO_BYTES], ss1[CRYPTO_BYTES];
-    
-    
-    
-}
 /****** New Hope <- ******/
 
 /****** -> TLS ******/
