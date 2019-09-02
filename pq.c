@@ -6,8 +6,8 @@
 #define NBYTES  1024
 
 /****** -> NewHope ******/
-#include "newhope/rng.h"
-#include "newhope/api.h"
+#include "newhope/rngnh.h"
+#include "newhope/apinh.h"
 /****** NewHope <- ******/
 
 /****** -> Dilithium ******/
@@ -127,10 +127,17 @@ void newhope_dec(unsigned char ss1, unsigned char ct, unsigned char pk)
 /****** -> TLS ******/
 void TLS(int sock, char *opt, int flag)
 {
+    unsigned char sk[CRYPTO_SECRETKEYBYTES_NH]CRYPTO_BYTES_NH, pk[CRYPTO_PUBLICKEYBYTES_NH];
+    unsigned char ct[CRYPTO_CIPHERTEXTBYTES_NH], ss[CRYPTO_BYTES_NH], ss1[CRYPTO_BYTES_NH];
+    
     // Algorithms
     if(strcmp(opt, "NEWHOPE") == 0 || strcmp(opt, "newhope") == 0)
     {
-        // ALGO
+        if(strcmp(opt_nh, "keygen") == 0 || strcm(opt_nh, "KEYGEN") == 0)
+        {
+            //KeyGen
+            newhopekeygen(unsigned char pk, unsigned char sk);
+        }
     }
     else if(strcmp(opt, "DILITHIUM") == 0 || strcmp(opt, "dilithium") == 0)
     {
