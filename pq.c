@@ -122,6 +122,10 @@ void newhope_dec(unsigned char ss1, unsigned char ct, unsigned char pk)
         printf("crypto_kem_dec returned <%d>\n", flag);
     }
 }
+void newhope1(int sock, int opt)
+{
+       
+}
 /****** New Hope <- ******/
 
 /****** -> TLS ******/
@@ -138,6 +142,7 @@ void TLS(int sock, char *opt, int flag)
             //KeyGen
             newhopekeygen(unsigned char pk, unsigned char sk);
         }
+        else if(opt_nh,)
     }
     else if(strcmp(opt, "DILITHIUM") == 0 || strcmp(opt, "dilithium") == 0)
     {
