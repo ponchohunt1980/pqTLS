@@ -124,25 +124,85 @@ void newhope_dec(unsigned char ss1, unsigned char ct, unsigned char pk)
 }
 void newhope1(int sock, int opt)
 {
-       
-}
+    int ret, j; 
+    int flag = 0;
+    unsigned char buffer[NBYTES];
+    //unsigned long long mlen, smlen;
+    unsigned char pk[CRYPTO_PUBLICKEYBYTES_NH];
+    unsigned char sk[CRYPTO_SECRETKEYBYTES_NH];
+    unsigned char ct[CRYPTO_CIPHERTEXTBYTES_NH], ss[CRYPTO_BYTES_NH], ss1[CRYPTO_BYTES_NH];
+    
+    if (opt == 1)
+    {
+        read(sock, pk, CRYPTO_PUBLICKEYBYTES_NH);
+        //read(sock, &smlen, sizeof(smlen));
+        //read(sock, sm, smlen);
+        //read(sock, m, MLEN);
+
+        // Encapsulate
+        ret = crypto_kem_enc(ct, ss, pk);
+
+        if(ret) 
+        {
+            strcpy(buffer, "Encapsultaion failed");
+            flag = 1;
+        }
+
+        send(sock, &ct, sizeof(ct), 0);
+        send(sock, &ss, sizeof(ss), 0);
+
+        if(flag)
+        {
+            send(sock, buffer, strlen(buffer), 0);
+        }
+    }
+    else if(opt == 2)
+    {
+        //Desencapsulate
+        read(sock, ct, CRYPTO_CIPHERTEXTBYTES_NH);
+        read(sock, sk, CRYPTO_SECRETKEYBYTES_NH);
+        
+        ret = crypto_kem_dec(ss1, ct, sk);
+        
+        if(ret) 
+        {
+            strcpy(buffer, "Desencapsultaion failed");
+            flag = 1;
+        }
+
+        send(sock, &ss1, sizeof(ss1), 0);
+
+        if(flag)
+        {
+            send(sock, buffer, strlen(buffer), 0);
+        }
+        
+        send(sock, pk, CRYPTO_PUBLICKEYBYTES_DILI, 0);
+        send(sock, &smlen, sizeof(smlen), 0);
+        send(sock, sm, smlen, 0);
+        send(sock, m, MLEN, 0);
+
+        read(sock, &flag, sizeof(flag));
+
+        if (flag)
+        {
+            ret = read(sock, buffer, NBYTES);
+            buffer[ret] = '\0';
+            printf("%s\n", buffer);
+        }
+    }
+
+    return;
+}   
 /****** New Hope <- ******/
 
 /****** -> TLS ******/
 void TLS(int sock, char *opt, int flag)
 {
-    unsigned char sk[CRYPTO_SECRETKEYBYTES_NH]CRYPTO_BYTES_NH, pk[CRYPTO_PUBLICKEYBYTES_NH];
-    unsigned char ct[CRYPTO_CIPHERTEXTBYTES_NH], ss[CRYPTO_BYTES_NH], ss1[CRYPTO_BYTES_NH];
-    
     // Algorithms
     if(strcmp(opt, "NEWHOPE") == 0 || strcmp(opt, "newhope") == 0)
     {
-        if(strcmp(opt_nh, "keygen") == 0 || strcm(opt_nh, "KEYGEN") == 0)
-        {
-            //KeyGen
-            newhopekeygen(unsigned char pk, unsigned char sk);
-        }
-        else if(opt_nh,)
+        newhope1(sock, flag);
     }
     else if(strcmp(opt, "DILITHIUM") == 0 || strcmp(opt, "dilithium") == 0)
     {
