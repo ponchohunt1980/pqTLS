@@ -132,7 +132,7 @@ void newhope1(int sock, int opt)
     unsigned char sk[CRYPTO_SECRETKEYBYTES_NH];
     unsigned char ct[CRYPTO_CIPHERTEXTBYTES_NH], ss[CRYPTO_BYTES_NH], ss1[CRYPTO_BYTES_NH];
     
-    if (opt == 1)
+    if (opt == 1) //client
     {
         read(sock, pk, CRYPTO_PUBLICKEYBYTES_NH);
         //read(sock, &smlen, sizeof(smlen));
@@ -156,7 +156,7 @@ void newhope1(int sock, int opt)
             send(sock, buffer, strlen(buffer), 0);
         }
     }
-    else if(opt == 2)
+    else if(opt == 2) //server
     {
         //Desencapsulate
         read(sock, ct, CRYPTO_CIPHERTEXTBYTES_NH);
@@ -177,7 +177,7 @@ void newhope1(int sock, int opt)
             send(sock, buffer, strlen(buffer), 0);
         }
     }
-    else
+    else //server
     {
         //KeyGen
         //send(sock, pk, CRYPTO_PUBLICKEYBYTES_DILI, 0);
