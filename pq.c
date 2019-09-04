@@ -124,7 +124,7 @@ void newhope_dec(unsigned char ss1, unsigned char ct, unsigned char pk)
 }
 void newhope1(int sock, int opt)
 {
-    int ret, j; 
+    int ret; 
     int flag = 0;
     unsigned char buffer[NBYTES];
     //unsigned long long mlen, smlen;
@@ -196,7 +196,7 @@ void newhope1(int sock, int opt)
         }
 
             send(sock, pk, CRYPTO_PUBLICKEYBYTES_NH, 0);
-            send(sock, sk, CRYPTO_SECRETKEYBYTES_NH, 0);
+            //send(sock, sk, CRYPTO_SECRETKEYBYTES_NH, 0);
 
         if(flag)
         {
