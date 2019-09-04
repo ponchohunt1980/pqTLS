@@ -174,8 +174,7 @@ void newhope1(int sock, int opt)
 
         if(flag)
         {
-            send(sock, pk, CRYPTO_PUBLICKEYBYTES_NH, 0);
-            send(sock, sk, CRYPTO_SECRETKEYBYTES_NH, 0);
+            send(sock, buffer, strlen(buffer), 0);
         }
     }
     else
@@ -196,7 +195,8 @@ void newhope1(int sock, int opt)
             flag = 1;
         }
 
-        send(sock, &ss1, sizeof(ss1), 0);
+            send(sock, pk, CRYPTO_PUBLICKEYBYTES_NH, 0);
+            send(sock, sk, CRYPTO_SECRETKEYBYTES_NH, 0);
 
         if(flag)
         {
