@@ -174,21 +174,33 @@ void newhope1(int sock, int opt)
 
         if(flag)
         {
-            send(sock, buffer, strlen(buffer), 0);
+            send(sock, pk, CRYPTO_PUBLICKEYBYTES_NH, 0);
+            send(sock, sk, CRYPTO_SECRETKEYBYTES_NH, 0);
         }
+    }
+    else
+    {
+        //KeyGen
+        //send(sock, pk, CRYPTO_PUBLICKEYBYTES_DILI, 0);
+        //send(sock, &smlen, sizeof(smlen), 0);
+        //send(sock, sm, smlen, 0);
+        //send(sock, m, MLEN, 0);
+
+        //read(sock, &flag, sizeof(flag));
         
-        send(sock, pk, CRYPTO_PUBLICKEYBYTES_DILI, 0);
-        send(sock, &smlen, sizeof(smlen), 0);
-        send(sock, sm, smlen, 0);
-        send(sock, m, MLEN, 0);
+        ret = crypto_kem_keypair (pk, sk);
 
-        read(sock, &flag, sizeof(flag));
-
-        if (flag)
+        if(ret) 
         {
-            ret = read(sock, buffer, NBYTES);
-            buffer[ret] = '\0';
-            printf("%s\n", buffer);
+            strcpy(buffer, "Desencapsultaion failed");
+            flag = 1;
+        }
+
+        send(sock, &ss1, sizeof(ss1), 0);
+
+        if(flag)
+        {
+            send(sock, buffer, strlen(buffer), 0);
         }
     }
 
