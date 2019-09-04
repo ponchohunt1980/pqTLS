@@ -149,7 +149,7 @@ void newhope1(int sock, int opt)
         }
 
         send(sock, &ct, sizeof(ct), 0);
-        send(sock, &ss, sizeof(ss), 0);
+        //send(sock, &ss, sizeof(ss), 0);
 
         if(flag)
         {
