@@ -148,29 +148,7 @@ void newhope1(int sock, int opt)
             flag = 1;
         }
 
-        send(sock, &ct, sizeof(ct), 0);
-        //send(sock, &ss, sizeof(ss), 0);
-
-        if(flag)
-        {
-            send(sock, buffer, strlen(buffer), 0);
-        }
-    }
-    else if(opt == 2) //server
-    {
-        //Desencapsulate
-        read(sock, ct, CRYPTO_CIPHERTEXTBYTES_NH);
-        read(sock, sk, CRYPTO_SECRETKEYBYTES_NH);
-        
-        ret = crypto_kem_dec(ss1, ct, sk);
-        
-        if(ret) 
-        {
-            strcpy(buffer, "Desencapsultaion failed");
-            flag = 1;
-        }
-
-        send(sock, &ss1, sizeof(ss1), 0);
+        send(sock, ct, sizeof(ct), 0);
 
         if(flag)
         {
@@ -180,23 +158,28 @@ void newhope1(int sock, int opt)
     else //server
     {
         //KeyGen
-        //send(sock, pk, CRYPTO_PUBLICKEYBYTES_DILI, 0);
-        //send(sock, &smlen, sizeof(smlen), 0);
-        //send(sock, sm, smlen, 0);
-        //send(sock, m, MLEN, 0);
-
-        //read(sock, &flag, sizeof(flag));
-        
         ret = crypto_kem_keypair (pk, sk);
-
+        
+        if(ret) 
+        {
+            strcpy(buffer, "Desencapsultaion failed");
+            flag = 1;
+            send(sock, buffer, strlen(buffer), 0);
+            return;
+        }
+        
+        send(sock, pk, CRYPTO_PUBLICKEYBYTES_NH, 0);
+        
+        read(sock, ct, CRYPTO_CIPHERTEXTBYTES_NH);
+     
+        //Desencapsulate
+        ret = crypto_kem_dec(ss1, ct, sk);
+        
         if(ret) 
         {
             strcpy(buffer, "Desencapsultaion failed");
             flag = 1;
         }
-
-            send(sock, pk, CRYPTO_PUBLICKEYBYTES_NH, 0);
-            //send(sock, sk, CRYPTO_SECRETKEYBYTES_NH, 0);
 
         if(flag)
         {
