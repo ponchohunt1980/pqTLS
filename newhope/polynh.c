@@ -219,7 +219,7 @@ void poly_tomsg(unsigned char *msg, const poly *x)
 * Arguments:   - poly *a:                   pointer to output polynomial
 *              - const unsigned char *seed: pointer to input seed
 **************************************************/
-void poly_uniform(poly *a, const unsigned char *seed)
+void poly_uniform_nh(poly *a, const unsigned char *seed)
 {
   unsigned int ctr=0;
   uint16_t val;
@@ -235,10 +235,10 @@ void poly_uniform(poly *a, const unsigned char *seed)
   {
     ctr = 0;
     extseed[NEWHOPE_SYMBYTES] = i; /* domain-separate the 16 independent calls */
-    shake128_absorb(state, extseed, NEWHOPE_SYMBYTES+1);
+    shake128_absorb_nh(state, extseed, NEWHOPE_SYMBYTES+1);
     while(ctr < 64) /* Very unlikely to run more than once */
     {
-      shake128_squeezeblocks(buf,1,state);
+      shake128_squeezeblocks_nh(buf,1,state);
       for(j=0;j<SHAKE128_RATE && ctr < 64;j+=2)
       {
         val = (buf[j] | ((uint16_t) buf[j+1] << 8));
@@ -296,7 +296,7 @@ void poly_sample(poly *r, const unsigned char *seed, unsigned char nonce)
   for(i=0;i<NEWHOPE_N/64;i++) /* Generate noise in blocks of 64 coefficients */
   {
     extseed[NEWHOPE_SYMBYTES+1] = i;
-    shake256(buf,128,extseed,NEWHOPE_SYMBYTES+2);
+    shake256_nh(buf,128,extseed,NEWHOPE_SYMBYTES+2);
     for(j=0;j<64;j++)
     {
       a = buf[2*j];
@@ -333,8 +333,8 @@ void poly_mul_pointwise(poly *r, const poly *a, const poly *b)
   uint16_t t;
   for(i=0;i<NEWHOPE_N;i++)
   {
-    t            = montgomery_reduce(3186*b->coeffs[i]); /* t is now in Montgomery domain */
-    r->coeffs[i] = montgomery_reduce(a->coeffs[i] * t);  /* r->coeffs[i] is back in normal domain */
+    t            = montgomery_reduce_nh(3186*b->coeffs[i]); /* t is now in Montgomery domain */
+    r->coeffs[i] = montgomery_reduce_nh(a->coeffs[i] * t);  /* r->coeffs[i] is back in normal domain */
   }
 }
 
@@ -347,7 +347,7 @@ void poly_mul_pointwise(poly *r, const poly *a, const poly *b)
 *              - const poly *a: pointer to first input polynomial
 *              - const poly *b: pointer to second input polynomial
 **************************************************/
-void poly_add(poly *r, const poly *a, const poly *b)
+void poly_add_nh(poly *r, const poly *a, const poly *b)
 {
   int i;
   for(i=0;i<NEWHOPE_N;i++)
@@ -363,7 +363,7 @@ void poly_add(poly *r, const poly *a, const poly *b)
 *              - const poly *a: pointer to first input polynomial
 *              - const poly *b: pointer to second input polynomial
 **************************************************/
-void poly_sub(poly *r, const poly *a, const poly *b)
+void poly_sub_nh(poly *r, const poly *a, const poly *b)
 {
   int i;
   for(i=0;i<NEWHOPE_N;i++)
@@ -379,10 +379,10 @@ void poly_sub(poly *r, const poly *a, const poly *b)
 *
 * Arguments:   - poly *r: pointer to in/output polynomial
 **************************************************/
-void poly_ntt(poly *r)
+void poly_ntt_nh(poly *r)
 {
   mul_coefficients(r->coeffs, gammas_bitrev_montgomery);
-  ntt((uint16_t *)r->coeffs, gammas_bitrev_montgomery);
+  ntt_nh((uint16_t *)r->coeffs, gammas_bitrev_montgomery);
 }
 
 /*************************************************
@@ -397,7 +397,7 @@ void poly_ntt(poly *r)
 void poly_invntt(poly *r)
 {
   bitrev_vector(r->coeffs);
-  ntt((uint16_t *)r->coeffs, omegas_inv_bitrev_montgomery);
+  ntt_nh((uint16_t *)r->coeffs, omegas_inv_bitrev_montgomery);
   mul_coefficients(r->coeffs, gammas_inv_montgomery);
 }
 

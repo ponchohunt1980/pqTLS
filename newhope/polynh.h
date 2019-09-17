@@ -12,11 +12,11 @@ typedef struct {
   uint16_t coeffs[NEWHOPE_N];
 } poly __attribute__ ((aligned (32)));
 
-void poly_uniform(poly *a, const unsigned char *seed);
+void poly_uniform_nh(poly *a, const unsigned char *seed);
 void poly_sample(poly *r, const unsigned char *seed, unsigned char nonce);
-void poly_add(poly *r, const poly *a, const poly *b);
+void poly_add_nh(poly *r, const poly *a, const poly *b);
 
-void poly_ntt(poly *r);
+void poly_ntt_nh(poly *r);
 void poly_invntt(poly *r);
 void poly_mul_pointwise(poly *r, const poly *a, const poly *b);
 
@@ -27,6 +27,6 @@ void poly_decompress(poly *r, const unsigned char *a);
 
 void poly_frommsg(poly *r, const unsigned char *msg);
 void poly_tomsg(unsigned char *msg, const poly *x);
-void poly_sub(poly *r, const poly *a, const poly *b);
+void poly_sub_nh(poly *r, const poly *a, const poly *b);
 
 #endif

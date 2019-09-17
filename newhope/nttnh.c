@@ -113,7 +113,7 @@ void mul_coefficients(uint16_t* poly, const uint16_t* factors)
     unsigned int i;
 
     for(i = 0; i < NEWHOPE_N; i++)
-      poly[i] = montgomery_reduce((poly[i] * factors[i]));
+      poly[i] = montgomery_reduce_nh((poly[i] * factors[i]));
 }
 
 #if (NEWHOPE_N == 512)
@@ -129,7 +129,7 @@ void mul_coefficients(uint16_t* poly, const uint16_t* factors)
 *              - const uint16_t* omega: pointer to input powers of root of unity omega;
 *                                       assumed to be in Montgomery domain
 **************************************************/
-void ntt(uint16_t * a, const uint16_t* omega)
+void ntt_nh(uint16_t * a, const uint16_t* omega)
 {
   int i, start, j, jTwiddle, distance;
   uint16_t temp, W;
@@ -147,7 +147,7 @@ void ntt(uint16_t * a, const uint16_t* omega)
         W = omega[jTwiddle++];
         temp = a[j];
         a[j] = (temp + a[j + distance]); // Omit reduction (be lazy)
-        a[j + distance] = montgomery_reduce((W * ((uint32_t)temp + 3*NEWHOPE_Q - a[j + distance])));
+        a[j + distance] = montgomery_reduce_nh((W * ((uint32_t)temp + 3*NEWHOPE_Q - a[j + distance])));
       }
     }
     if(i+1<9){
@@ -161,7 +161,7 @@ void ntt(uint16_t * a, const uint16_t* omega)
           W = omega[jTwiddle++];
           temp = a[j];
           a[j] = (temp + a[j + distance]) % NEWHOPE_Q;
-          a[j + distance] = montgomery_reduce((W * ((uint32_t)temp + 3*NEWHOPE_Q - a[j + distance])));
+          a[j + distance] = montgomery_reduce_nh((W * ((uint32_t)temp + 3*NEWHOPE_Q - a[j + distance])));
         }
       }
     }
@@ -181,7 +181,7 @@ void /*************************************************
 *              - const uint16_t* omega: pointer to input powers of root of unity omega;
 *                                       assumed to be in Montgomery domain
 **************************************************/
-ntt(uint16_t * a, const uint16_t* omega)
+ntt_nh(uint16_t * a, const uint16_t* omega)
 {
   int i, start, j, jTwiddle, distance;
   uint16_t temp, W;
@@ -199,7 +199,7 @@ ntt(uint16_t * a, const uint16_t* omega)
         W = omega[jTwiddle++];
         temp = a[j];
         a[j] = (temp + a[j + distance]); // Omit reduction (be lazy)
-        a[j + distance] = montgomery_reduce((W * ((uint32_t)temp + 3*NEWHOPE_Q - a[j + distance])));
+        a[j + distance] = montgomery_reduce_nh((W * ((uint32_t)temp + 3*NEWHOPE_Q - a[j + distance])));
       }
     }
 
@@ -213,7 +213,7 @@ ntt(uint16_t * a, const uint16_t* omega)
         W = omega[jTwiddle++];
         temp = a[j];
         a[j] = (temp + a[j + distance]) % NEWHOPE_Q;
-        a[j + distance] = montgomery_reduce((W * ((uint32_t)temp + 3*NEWHOPE_Q - a[j + distance])));
+        a[j + distance] = montgomery_reduce_nh((W * ((uint32_t)temp + 3*NEWHOPE_Q - a[j + distance])));
       }
     }
   }

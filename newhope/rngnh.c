@@ -13,7 +13,7 @@
 
 AES256_CTR_DRBG_struct  DRBG_ctx;
 
-void    AES256_ECB(unsigned char *key, unsigned char *ctr, unsigned char *buffer);
+void    AES256_ECB_nh(unsigned char *key, unsigned char *ctr, unsigned char *buffer);
 
 /*
  seedexpander_init()
@@ -23,7 +23,7 @@ void    AES256_ECB(unsigned char *key, unsigned char *ctr, unsigned char *buffer
  maxlen         - maximum number of bytes (less than 2**32) generated under this seed and diversifier
  */
 int
-seedexpander_init(AES_XOF_struct *ctx,
+seedexpander_init_nh(AES_XOF_struct *ctx,
                   unsigned char *seed,
                   unsigned char *diversifier,
                   unsigned long maxlen)
@@ -58,7 +58,7 @@ seedexpander_init(AES_XOF_struct *ctx,
     xlen - number of bytes to return
  */
 int
-seedexpander(AES_XOF_struct *ctx, unsigned char *x, unsigned long xlen)
+seedexpander_nh(AES_XOF_struct *ctx, unsigned char *x, unsigned long xlen)
 {
     unsigned long   offset;
     
@@ -83,7 +83,7 @@ seedexpander(AES_XOF_struct *ctx, unsigned char *x, unsigned long xlen)
         xlen -= 16-ctx->buffer_pos;
         offset += 16-ctx->buffer_pos;
         
-        AES256_ECB(ctx->key, ctx->ctr, ctx->buffer);
+        AES256_ECB_nh(ctx->key, ctx->ctr, ctx->buffer);
         ctx->buffer_pos = 0;
         
         //increment the counter
@@ -102,7 +102,7 @@ seedexpander(AES_XOF_struct *ctx, unsigned char *x, unsigned long xlen)
 }
 
 
-void handleErrors(void)
+void handleErrors_nh(void)
 {
     ERR_print_errors_fp(stderr);
     abort();
@@ -113,7 +113,7 @@ void handleErrors(void)
 //    ctr - a 128-bit plaintext value
 //    buffer - a 128-bit ciphertext value
 void
-AES256_ECB(unsigned char *key, unsigned char *ctr, unsigned char *buffer)
+AES256_ECB_nh(unsigned char *key, unsigned char *ctr, unsigned char *buffer)
 {
     EVP_CIPHER_CTX *ctx;
     
@@ -122,13 +122,13 @@ AES256_ECB(unsigned char *key, unsigned char *ctr, unsigned char *buffer)
     int ciphertext_len;
     
     /* Create and initialise the context */
-    if(!(ctx = EVP_CIPHER_CTX_new())) handleErrors();
+    if(!(ctx = EVP_CIPHER_CTX_new())) handleErrors_nh();
     
     if(1 != EVP_EncryptInit_ex(ctx, EVP_aes_256_ecb(), NULL, key, NULL))
-        handleErrors();
+        handleErrors_nh();
     
     if(1 != EVP_EncryptUpdate(ctx, buffer, &len, ctr, 16))
-        handleErrors();
+        handleErrors_nh();
     ciphertext_len = len;
     
     /* Clean up */
@@ -136,7 +136,7 @@ AES256_ECB(unsigned char *key, unsigned char *ctr, unsigned char *buffer)
 }
 
 void
-randombytes_init(unsigned char *entropy_input,
+randombytes_init_nh(unsigned char *entropy_input,
                  unsigned char *personalization_string,
                  int security_strength)
 {
@@ -148,12 +148,12 @@ randombytes_init(unsigned char *entropy_input,
             seed_material[i] ^= personalization_string[i];
     memset(DRBG_ctx.Key, 0x00, 32);
     memset(DRBG_ctx.V, 0x00, 16);
-    AES256_CTR_DRBG_Update(seed_material, DRBG_ctx.Key, DRBG_ctx.V);
+    AES256_CTR_DRBG_Update_nh(seed_material, DRBG_ctx.Key, DRBG_ctx.V);
     DRBG_ctx.reseed_counter = 1;
 }
 
 int
-randombytes(unsigned char *x, unsigned long long xlen)
+randombytes_nh(unsigned char *x, unsigned long long xlen)
 {
     unsigned char   block[16];
     int             i = 0;
@@ -168,7 +168,7 @@ randombytes(unsigned char *x, unsigned long long xlen)
                 break;
             }
         }
-        AES256_ECB(DRBG_ctx.Key, DRBG_ctx.V, block);
+        AES256_ECB_nh(DRBG_ctx.Key, DRBG_ctx.V, block);
         if ( xlen > 15 ) {
             memcpy(x+i, block, 16);
             i += 16;
@@ -179,14 +179,14 @@ randombytes(unsigned char *x, unsigned long long xlen)
             xlen = 0;
         }
     }
-    AES256_CTR_DRBG_Update(NULL, DRBG_ctx.Key, DRBG_ctx.V);
+    AES256_CTR_DRBG_Update_nh(NULL, DRBG_ctx.Key, DRBG_ctx.V);
     DRBG_ctx.reseed_counter++;
     
     return RNG_SUCCESS;
 }
 
 void
-AES256_CTR_DRBG_Update(unsigned char *provided_data,
+AES256_CTR_DRBG_Update_nh(unsigned char *provided_data,
                        unsigned char *Key,
                        unsigned char *V)
 {
@@ -203,7 +203,7 @@ AES256_CTR_DRBG_Update(unsigned char *provided_data,
             }
         }
         
-        AES256_ECB(Key, V, temp+16*i);
+        AES256_ECB_nh(Key, V, temp+16*i);
     }
     if ( provided_data != NULL )
         for (int i=0; i<48; i++)

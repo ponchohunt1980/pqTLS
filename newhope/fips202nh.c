@@ -437,7 +437,7 @@ static void keccak_squeezeblocks(unsigned char *h, unsigned long long int nblock
 *              - const unsigned char *input:      pointer to input to be absorbed into s
 *              - unsigned long long inputByteLen: length of input in bytes
 **************************************************/
-void shake128_absorb(uint64_t *s, const unsigned char *input, unsigned long long inputByteLen)
+void shake128_absorb_nh(uint64_t *s, const unsigned char *input, unsigned long long inputByteLen)
 {
   keccak_absorb(s, SHAKE128_RATE, input, inputByteLen, 0x1F);
 }
@@ -453,7 +453,7 @@ void shake128_absorb(uint64_t *s, const unsigned char *input, unsigned long long
 *              - unsigned long long nblocks: number of blocks to be squeezed (written to output)
 *              - uint64_t *s:                pointer to in/output Keccak state
 **************************************************/
-void shake128_squeezeblocks(unsigned char *output, unsigned long long nblocks, uint64_t *s)
+void shake128_squeezeblocks_nh(unsigned char *output, unsigned long long nblocks, uint64_t *s)
 {
   keccak_squeezeblocks(output, nblocks, s, SHAKE128_RATE);
 }
@@ -468,7 +468,7 @@ void shake128_squeezeblocks(unsigned char *output, unsigned long long nblocks, u
                - const unsigned char *input: pointer to input
                - unsigned long long inlen:   length of input in bytes
 **************************************************/
-void shake256(unsigned char *output, unsigned long long outlen, 
+void shake256_nh(unsigned char *output, unsigned long long outlen, 
               const unsigned char *input,  unsigned long long inlen)
 {
   uint64_t s[25];

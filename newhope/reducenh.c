@@ -15,7 +15,7 @@ static const uint32_t rlog = 18;
 *              
 * Returns:     unsigned integer in {0,...,2^14-1} congruent to a * R^-1 modulo q.
 **************************************************/
-uint16_t montgomery_reduce(uint32_t a)
+uint16_t montgomery_reduce_nh(uint32_t a)
 {
   uint32_t u;
 
