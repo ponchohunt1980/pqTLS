@@ -1,7 +1,7 @@
 // Lib PQ
 
-#include <unistd.h> 
-#include <sys/socket.h> 
+#include <unistd.h>
+#include <sys/socket.h>
 
 #define NBYTES  1024
 
@@ -20,20 +20,20 @@
 // opt = 0: KeyGen, Sign; opt = 1: Verification
 void dilithium1(int sock, int opt)
 {
-    int ret, j; 
+    int ret, j;
     int flag = 0;
     unsigned char buffer[NBYTES];
     unsigned long long mlen, smlen;
     unsigned char m[MLEN];
-    unsigned char m2[MLEN + CRYPTO_BYTES_DILI];
-    unsigned char sm[MLEN + CRYPTO_BYTES_DILI];
-    unsigned char pk[CRYPTO_PUBLICKEYBYTES_DILI];
-    unsigned char sk[CRYPTO_SECRETKEYBYTES_DILI];
+    unsigned char m2[MLEN + CRYPTO_BYTES];
+    unsigned char sm[MLEN + CRYPTO_BYTES];
+    unsigned char pk[CRYPTO_PUBLICKEYBYTES];
+    unsigned char sk[CRYPTO_SECRETKEYBYTES];
 
     // Verification
     if (opt)
     {
-        read(sock, pk, CRYPTO_PUBLICKEYBYTES_DILI);
+        read(sock, pk, CRYPTO_PUBLICKEYBYTES);
         read(sock, &smlen, sizeof(smlen));
         read(sock, sm, smlen);
         read(sock, m, MLEN);
@@ -73,7 +73,7 @@ void dilithium1(int sock, int opt)
 
         crypto_sign(sm, &smlen, m, MLEN, sk);
 
-        send(sock, pk, CRYPTO_PUBLICKEYBYTES_DILI, 0);
+        send(sock, pk, CRYPTO_PUBLICKEYBYTES, 0);
         send(sock, &smlen, sizeof(smlen), 0);
         send(sock, sm, smlen, 0);
         send(sock, m, MLEN, 0);
@@ -95,14 +95,14 @@ void dilithium1(int sock, int opt)
 /****** New Hope <- ******/
 void newhope1(int sock, int opt)
 {
-    int ret; 
+    int ret;
     int flag = 0;
     unsigned char buffer[NBYTES];
     //unsigned long long mlen, smlen;
     unsigned char pk[CRYPTO_PUBLICKEYBYTES_NH];
     unsigned char sk[CRYPTO_SECRETKEYBYTES_NH];
     unsigned char ct[CRYPTO_CIPHERTEXTBYTES_NH], ss[CRYPTO_BYTES_NH], ss1[CRYPTO_BYTES_NH];
-    
+
     if (opt == 1) //client
     {
         read(sock, pk, CRYPTO_PUBLICKEYBYTES_NH);
@@ -111,9 +111,9 @@ void newhope1(int sock, int opt)
         //read(sock, m, MLEN);
 
         // Encapsulate
-        ret = crypto_kem_enc(ct, ss, pk);
+        ret = crypto_kem_enc_nh(ct, ss, pk);
 
-        if(ret) 
+        if(ret)
         {
             strcpy(buffer, "Encapsultaion failed");
             flag = 1;
@@ -129,7 +129,7 @@ void newhope1(int sock, int opt)
     else //server
     {
         //KeyGen
-        ret = crypto_kem_keypair (pk, sk);
+        ret = crypto_kem_keypair_nh(pk, sk);
         
         if(ret) 
         {
@@ -138,13 +138,13 @@ void newhope1(int sock, int opt)
             send(sock, buffer, strlen(buffer), 0);
             return;
         }
-        
+
         send(sock, pk, CRYPTO_PUBLICKEYBYTES_NH, 0);
-        
+
         read(sock, ct, CRYPTO_CIPHERTEXTBYTES_NH);
-     
+
         //Desencapsulate
-        ret = crypto_kem_dec(ss1, ct, sk);
+        ret = crypto_kem_dec_nh(ss1, ct, sk);
         
         if(ret) 
         {
@@ -159,7 +159,7 @@ void newhope1(int sock, int opt)
     }
 
     return;
-}   
+}
 /****** New Hope <- ******/
 
 /****** -> TLS ******/
@@ -176,7 +176,7 @@ void TLS(int sock, char *opt, int flag)
     }
     else if(strcmp(opt, "EXIT") == 0 || strcmp(opt, "exit") == 0)
     {
-        break;
+        return;
     }
     else
     {
