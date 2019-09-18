@@ -176,7 +176,17 @@ void TLS(int sock, char *opt, int opt2, int flag)
     }
     else if (opt2 == 1 || flag == 0)//verificacion server cert
     {
-      dilithium(sock, 0);
+      dilithium(sock, flag);
+      newhope1(sock, flag);
+    }
+    else if (opt2 == 1 || flag ==1)
+    {
+      dilithium1(sock, flag);
+      newhope1(sock,flag);
+    }
+    else
+    {
+      
     }
 
     // Algorithms
