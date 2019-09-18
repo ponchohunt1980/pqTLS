@@ -2,6 +2,7 @@
 
 #include <unistd.h>
 #include <sys/socket.h>
+#include <openssl/aes.h>
 
 #include "dilithium1aes/randombytes.h"
 #include "dilithium1aes/params.h"
