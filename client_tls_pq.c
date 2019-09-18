@@ -12,7 +12,7 @@
 #define FCLIENT 0 // and FSERVER 1
 
 //argv[1] = dilithium || argv[1] = newhope
-//argv[2] = 0 no sign || argv[2] = 1 client verify || argv[2] = 2 both verify
+//argv[2] = 0 no sign || argv[2] = 1 server cert verify || argv[2] = 2 both verify
 int main(int argc, char const *argv[])
 {
     int sock = 0, lenval, opt2;

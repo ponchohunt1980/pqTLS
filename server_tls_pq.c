@@ -13,6 +13,7 @@
 #define NSB  1024
 #define FSERVER 1 // and FCLIENT 0
 
+//argv[2] = 0 no sign || argv[2] = 1 server cert verify || argv[2] = 2 both verify
 int main(int argc, char const *argv[]) 
 { 
     int server_fd, new_socket, lenval; 

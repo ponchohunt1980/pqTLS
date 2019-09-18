@@ -29,6 +29,7 @@ void dilithium1(int sock, int opt)
     unsigned char sk[CRYPTO_SECRETKEYBYTES_DILI];
 
     // KeyGen and Sign
+    // opt = 1 | send pk and cert with sign
     if (opt)
     {
       randombytes(m, MLEN);
@@ -37,6 +38,7 @@ void dilithium1(int sock, int opt)
 
       crypto_sign(sm, &smlen, m, MLEN, sk); //Sign
 
+      // read public key and cert from a file input
       send(sock, pk, CRYPTO_PUBLICKEYBYTES_DILI, 0);
       send(sock, &smlen, sizeof(smlen), 0);
       send(sock, sm, smlen, 0);
@@ -167,8 +169,15 @@ void newhope1(int sock, int opt)
 /****** -> TLS ******/
 void TLS(int sock, char *opt, int opt2, int flag)
 {
-
-
+    //opt2 = 0 no sign || opt2 = 1 server cert verify || opt2 = 2 both verify
+    if (opt2 == 0)//no sign
+    {
+      newhope1(sock, flag);
+    }
+    else if (opt2 == 1 || flag == 0)//verificacion server cert
+    {
+      dilithium(sock, 0);
+    }
 
     // Algorithms
     if(strcmp(opt, "NEWHOPE") == 0 || strcmp(opt, "newhope") == 0)
