@@ -127,6 +127,7 @@ void newhope1(int sock, int opt)
       {
           send(sock, buffer, strlen(buffer), 0);
       }
+      //AES256 functions
     }
     // Encapsulate
     else
@@ -147,8 +148,8 @@ void newhope1(int sock, int opt)
       {
           send(sock, buffer, strlen(buffer), 0);
       }
+      //AES256 function
     }
-
     return;
 }
 /****** New Hope <- ******/
