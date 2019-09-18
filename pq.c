@@ -2,6 +2,7 @@
 
 #include <unistd.h>
 #include <sys/socket.h>
+#include <openssl/evp.h>
 #include <openssl/aes.h>
 
 #include "dilithium1aes/randombytes.h"
@@ -129,6 +130,10 @@ void newhope1(int sock, int opt)
           send(sock, buffer, strlen(buffer), 0);
       }
       //AES256 functions
+      // int AES_set_encrypt_key(const unsigned char *userKey, const int bits, AES_KEY *key)
+      // int  AES_set_decrypt_key (const unsigned char *userKey, const int bits, AES_KEY *key)
+      // void   AES_encrypt (const unsigned char *in, unsigned char *out, const AES_KEY *key)
+      // void   AES_decrypt (const unsigned char *in, unsigned char *out, const AES_KEY *key)
     }
     // Encapsulate
     else
@@ -149,7 +154,11 @@ void newhope1(int sock, int opt)
       {
           send(sock, buffer, strlen(buffer), 0);
       }
-      //AES256 function
+      //AES256 functions
+      // int AES_set_encrypt_key(const unsigned char *userKey, const int bits, AES_KEY *key)
+      // int  AES_set_decrypt_key (const unsigned char *userKey, const int bits, AES_KEY *key)
+      // void   AES_encrypt (const unsigned char *in, unsigned char *out, const AES_KEY *key)
+      // void   AES_decrypt (const unsigned char *in, unsigned char *out, const AES_KEY *key)
     }
     return;
 }
