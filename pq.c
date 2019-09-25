@@ -2,21 +2,21 @@
 
 #include <unistd.h>
 #include <sys/socket.h>
-#include <openssl/evp.h>
-#include <openssl/aes.h>
+#include <string.h>
 
 #include "dilithium1aes/randombytes.h"
 #include "dilithium1aes/params.h"
 #include "dilithium1aes/sign.h"
 #include "newhope/rngnh.h"
 #include "newhope/apinh.h"
+#include "opensslaes.h"
 
 #define NBYTES  1024
 #define MLEN 59
 
 /****** -> Dilithium ******/
 // opt = 1: KeyGen, Sign; opt = 0: Verification
-void dilithium1(int sock, int opt)
+int dilithium1(int sock, int opt)
 {
     int ret, j;
     int flag = 0;
@@ -88,25 +88,25 @@ void dilithium1(int sock, int opt)
       }
     }
 
-    return;
+    return flag;
 }
 /****** Dilithium <- ******/
 
 /****** -> New Hope ******/
 // opt = 1: Server; opt = 0: Client
-void newhope1(int sock, int opt)
+int newhope1(int sock, int opt, unsigned char *ss)
 {
     int ret;
     int flag = 0;
     unsigned char buffer[NBYTES];
     unsigned char pk[CRYPTO_PUBLICKEYBYTES_NH];
     unsigned char sk[CRYPTO_SECRETKEYBYTES_NH];
-    unsigned char ct[CRYPTO_CIPHERTEXTBYTES_NH], ss[CRYPTO_BYTES_NH], ss1[CRYPTO_BYTES_NH];
+    unsigned char ct[CRYPTO_CIPHERTEXTBYTES_NH]; //, ss[CRYPTO_BYTES_NH], ss1[CRYPTO_BYTES_NH];
 
     //KeyGen and Desencapsulate (server)
     if (opt)
     {
-      ret = crypto_kem_keypair (pk, sk); //KeyGen
+      ret = crypto_kem_keypair(pk, sk); //KeyGen
 
       if(ret)
       {
@@ -119,7 +119,7 @@ void newhope1(int sock, int opt)
       send(sock, pk, CRYPTO_PUBLICKEYBYTES_NH, 0);
       read(sock, ct, CRYPTO_CIPHERTEXTBYTES_NH);
 
-      ret = crypto_kem_dec(ss1, ct, sk); //Desencapsulate
+      ret = crypto_kem_dec(ss, ct, sk); //Desencapsulate
 
       if(ret)
       {
@@ -131,14 +131,8 @@ void newhope1(int sock, int opt)
       {
           send(sock, buffer, strlen(buffer), 0);
       }
-      //AES256 functions
-      // int AES_set_encrypt_key(const unsigned char *userKey, const int bits, AES_KEY *key)
-      // int  AES_set_decrypt_key (const unsigned char *userKey, const int bits, AES_KEY *key)
-      // void   AES_encrypt (const unsigned char *in, unsigned char *out, const AES_KEY *key)
-      // void   AES_decrypt (const unsigned char *in, unsigned char *out, const AES_KEY *key)
     }
-    // Encapsulate
-    else
+    else // Encapsulate
     {
       read(sock, pk, CRYPTO_PUBLICKEYBYTES_NH);
 
@@ -156,57 +150,108 @@ void newhope1(int sock, int opt)
       {
           send(sock, buffer, strlen(buffer), 0);
       }
-      //AES256 functions
-      // int AES_set_encrypt_key(const unsigned char *userKey, const int bits, AES_KEY *key)
-      // int  AES_set_decrypt_key (const unsigned char *userKey, const int bits, AES_KEY *key)
-      // void   AES_encrypt (const unsigned char *in, unsigned char *out, const AES_KEY *key)
-      // void   AES_decrypt (const unsigned char *in, unsigned char *out, const AES_KEY *key)
     }
-    return;
+
+    return flag;
 }
 /****** New Hope <- ******/
+
+/****** -> AES ******/
+void symmetric_enc_dec(int sock, int flag, unsigned char *ss, unsigned char *msg)
+{
+    // AES
+  /* A 256 bit key */
+  unsigned char key[32];
+  /* A 128 bit IV */
+  unsigned char iv[16];
+  memcpy(key, ss, 32);
+  memcpy(iv, ss+32, 16);
+
+  int decryptedtext_len;
+  /*
+    * Buffer for ciphertext. Ensure the buffer is long enough for the
+    * ciphertext which may be longer than the plaintext, depending on the
+    * algorithm and mode.
+  */
+  unsigned char ciphertext[BS];
+  /* Buffer for the decrypted text */
+  unsigned char decryptedtext[BS];
+
+  // Server
+  if (flag)
+  {
+    read(sock, ciphertext, BS);
+
+    /* Decrypt the ciphertext */
+    decryptedtext_len = decrypt(ciphertext, strlen(ciphertext), key, iv,
+                                decryptedtext);
+    /* Add a NULL terminator. We are expecting printable text */
+    decryptedtext[decryptedtext_len] = '\0';
+  }
+  else // client
+  {
+    // Message 
+    randombytes(msg, BS);
+
+    /* Encrypt the plaintext */
+    encrypt(msg, strlen(msg), key, iv, ciphertext);
+
+    // Testing
+    //BIO_dump_fp (stdout, (const char *)ciphertext, strlen(ciphertext_len);
+
+    send(sock, ciphertext, strlen(ciphertext), 0);
+  }
+
+  return;
+}
+/****** AES <- ******/
+
+void safe_channel(int sock, int flag)
+{
+  unsigned char ss[CRYPTO_BYTES_NH];
+  // Shared key
+  if (newhope1(sock, flag, ss))
+  { return; }
+
+  // File or message
+  unsigned char msg[BS];
+
+  if (flag == 0)
+  {
+    // Message 
+    randombytes(msg, BS);
+  }
+
+  symmetric_enc_dec(sock, flag, ss, msg);  
+}
 
 /****** -> TLS ******/
 void TLS(int sock, char *opt, int opt2, int flag)
 {
-    //opt2 = 0 no sign || opt2 = 1 server cert verify || opt2 = 2 both verify
-    if (opt2 == 0)//no sign
+  //opt2 = 0 no sign || opt2 = 1 server cert verify || opt2 = 2 both verify
+  if (opt2 == 0)//no sign
+  {
+    safe_channel(sock, flag);
+  }
+  else if (opt2 == 1 || flag == 0)//verificacion server cert
+  {
+    if (dilithium(sock, flag))
     {
-      newhope1(sock, flag);
+      return;
     }
-    else if (opt2 == 1 || flag == 0)//verificacion server cert
+    safe_channel(sock, flag);
+  }
+  else if (opt2 == 1 || flag ==1) // Both
+  {
+    if (dilithium(sock, flag) || dilithium(sock, ~flag))
     {
-      dilithium(sock, flag);
-      newhope1(sock, flag);
+      return;
     }
-    else if (opt2 == 1 || flag ==1)
-    {
-      dilithium1(sock, flag);
-      newhope1(sock,flag);
-    }
-    else
-    {
-      
-    }
+    safe_channel(sock, flag);
+  }
+  else
+  { }
 
-    // Algorithms
-    if(strcmp(opt, "NEWHOPE") == 0 || strcmp(opt, "newhope") == 0)
-    {
-        newhope1(sock, flag);
-    }
-    else if(strcmp(opt, "DILITHIUM") == 0 || strcmp(opt, "dilithium") == 0)
-    {
-        dilithium1(sock, flag);
-    }
-    else if(strcmp(opt, "EXIT") == 0 || strcmp(opt, "exit") == 0)
-    {
-        break;
-    }
-    else
-    {
-        printf("ERROR: %s\n", opt);
-    }
-
-    return;
+  return;
 }
 /****** TLS <- ******/
