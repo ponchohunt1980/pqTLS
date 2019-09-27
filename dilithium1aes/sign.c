@@ -264,7 +264,7 @@ int crypto_sign(unsigned char *sm,
   /* Write signature */
   pack_sig(sm, &z, &h, &c);
 
-  *smlen = mlen + CRYPTO_BYTES;
+  *smlen = mlen + CRYPTO_BYTES_DILI;
   return 0;
 }
 
@@ -344,7 +344,7 @@ int crypto_sign_open(unsigned char *m,
 
   /* All good, copy msg, return 0 */
   for(i = 0; i < *mlen; ++i)
-    m[i] = sm[CRYPTO_BYTES + i];
+    m[i] = sm[CRYPTO_BYTES_DILI + i];
 
   return 0;
 
