@@ -181,16 +181,16 @@ void symmetric_enc_dec(int sock, int flag, unsigned char *ss, unsigned char *msg
   unsigned char decryptedtext[BS];
 
   BIO_dump_fp (stdout, (const char *)ss, strlen(ss));
-
+/*
   // Server
   if (flag)
   {
     t = read(sock, ciphertext, BS);
 
-    /* Decrypt the ciphertext */
+    // Decrypt the ciphertext 
     decryptedtext_len = decrypt(ciphertext, strlen(ciphertext), key, iv,
                                 decryptedtext);
-    /* Add a NULL terminator. We are expecting printable text */
+    // Add a NULL terminator. We are expecting printable text
     decryptedtext[decryptedtext_len] = '\0';
     printf("%s\n", decryptedtext);
   }
@@ -199,7 +199,7 @@ void symmetric_enc_dec(int sock, int flag, unsigned char *ss, unsigned char *msg
     // Message 
     //randombytes(msg, NBYTES);
 
-    /* Encrypt the plaintext */
+    // Encrypt the plaintext
     encrypt(msg, strlen(msg), key, iv, ciphertext);
 
     // Testing
@@ -207,7 +207,7 @@ void symmetric_enc_dec(int sock, int flag, unsigned char *ss, unsigned char *msg
 
     send(sock, ciphertext, strlen(ciphertext), 0);
   }
-
+*/
   return;
 }
 /****** AES <- ******/
