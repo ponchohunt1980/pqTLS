@@ -18,4 +18,4 @@ server: server_tls_pq.c dilithium1aes/rng.c $(SOURCES) dilithium1aes/rng.h $(HEA
 .PHONY: clean
 
 clean:
-	-rm client
+	-rm client server

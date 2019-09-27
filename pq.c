@@ -180,6 +180,8 @@ void symmetric_enc_dec(int sock, int flag, unsigned char *ss, unsigned char *msg
   /* Buffer for the decrypted text */
   unsigned char decryptedtext[BS];
 
+  printf("0x%s\n", ss);
+
   // Server
   if (flag)
   {
