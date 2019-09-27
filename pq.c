@@ -161,6 +161,7 @@ int newhope1(int sock, int opt, unsigned char *ss)
 /****** -> AES ******/
 void symmetric_enc_dec(int sock, int flag, unsigned char *ss, unsigned char *msg)
 {
+  int t;
     // AES
   /* A 256 bit key */
   unsigned char key[32];
@@ -182,7 +183,7 @@ void symmetric_enc_dec(int sock, int flag, unsigned char *ss, unsigned char *msg
   // Server
   if (flag)
   {
-    read(sock, ciphertext, BS);
+    t = read(sock, ciphertext, BS);
 
     /* Decrypt the ciphertext */
     decryptedtext_len = decrypt(ciphertext, strlen(ciphertext), key, iv,
