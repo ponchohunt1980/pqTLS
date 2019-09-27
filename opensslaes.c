@@ -44,6 +44,7 @@ void encrypt(unsigned char *plaintext, int plaintext_len, unsigned char *key,
    * Finalise the encryption. Further ciphertext bytes may be written at
    * this stage.
    */
+  printf("l: %d %s\n", len, ciphertext);
   if(1 != EVP_EncryptFinal_ex(ctx, ciphertext + len, &len))
       handleErrorsAES();
   ciphertext_len += len;
