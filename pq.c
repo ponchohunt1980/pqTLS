@@ -190,11 +190,12 @@ void symmetric_enc_dec(int sock, int flag, unsigned char *ss, unsigned char *msg
                                 decryptedtext);
     /* Add a NULL terminator. We are expecting printable text */
     decryptedtext[decryptedtext_len] = '\0';
+    printf("%s\n", decryptedtext);
   }
   else // client
   {
     // Message 
-    randombytes(msg, NBYTES);
+    //randombytes(msg, NBYTES);
 
     /* Encrypt the plaintext */
     encrypt(msg, strlen(msg), key, iv, ciphertext);
@@ -217,7 +218,7 @@ void safe_channel(int sock, int flag)
   { return; }
 
   // File or message
-  unsigned char msg[BS];
+  unsigned char msg[NBYTES] = "Hola mundo (client)";
 
   if (flag == 0)
   {
