@@ -103,6 +103,7 @@ int newhope1(int sock, int opt, unsigned char *ss)
     unsigned char pk[CRYPTO_PUBLICKEYBYTES_NH];
     unsigned char sk[CRYPTO_SECRETKEYBYTES_NH];
     unsigned char ct[CRYPTO_CIPHERTEXTBYTES_NH]; //, ss[CRYPTO_BYTES_NH], ss1[CRYPTO_BYTES_NH];
+    int t;
 
     //KeyGen and Desencapsulate (server)
     if (opt)
