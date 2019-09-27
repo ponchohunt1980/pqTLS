@@ -3,7 +3,7 @@
 #include <openssl/err.h>
 #include <string.h>
 
-void handleErrors(void)
+void handleErrorsAES(void)
 {
   ERR_print_errors_fp(stderr);
   abort();
@@ -20,7 +20,7 @@ void encrypt(unsigned char *plaintext, int plaintext_len, unsigned char *key,
 
   /* Create and initialise the context */
   if(!(ctx = EVP_CIPHER_CTX_new()))
-      handleErrors();
+      handleErrorsAES();
 
   /*
    * Initialise the encryption operation. IMPORTANT - ensure you use a key
@@ -30,14 +30,14 @@ void encrypt(unsigned char *plaintext, int plaintext_len, unsigned char *key,
    * is 128 bits
    */
   if(1 != EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, iv))
-      handleErrors();
+      handleErrorsAES();
 
   /*
    * Provide the message to be encrypted, and obtain the encrypted output.
    * EVP_EncryptUpdate can be called multiple times if necessary
    */
   if(1 != EVP_EncryptUpdate(ctx, ciphertext, &len, plaintext, plaintext_len))
-      handleErrors();
+      handleErrorsAES();
   ciphertext_len = len;
 
   /*
@@ -45,7 +45,7 @@ void encrypt(unsigned char *plaintext, int plaintext_len, unsigned char *key,
    * this stage.
    */
   if(1 != EVP_EncryptFinal_ex(ctx, ciphertext + len, &len))
-      handleErrors();
+      handleErrorsAES();
   ciphertext_len += len;
 
   /* Clean up */
@@ -67,7 +67,7 @@ int decrypt(unsigned char *ciphertext, int ciphertext_len, unsigned char *key,
 
   /* Create and initialise the context */
   if(!(ctx = EVP_CIPHER_CTX_new()))
-      handleErrors();
+      handleErrorsAES();
 
   /*
    * Initialise the decryption operation. IMPORTANT - ensure you use a key
@@ -77,14 +77,14 @@ int decrypt(unsigned char *ciphertext, int ciphertext_len, unsigned char *key,
    * is 128 bits
    */
   if(1 != EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, iv))
-      handleErrors();
+      handleErrorsAES();
 
   /*
    * Provide the message to be decrypted, and obtain the plaintext output.
    * EVP_DecryptUpdate can be called multiple times if necessary.
    */
   if(1 != EVP_DecryptUpdate(ctx, plaintext, &len, ciphertext, ciphertext_len))
-      handleErrors();
+      handleErrorsAES();
   plaintext_len = len;
 
   /*
@@ -92,7 +92,7 @@ int decrypt(unsigned char *ciphertext, int ciphertext_len, unsigned char *key,
    * this stage.
    */
   if(1 != EVP_DecryptFinal_ex(ctx, plaintext + len, &len))
-      handleErrors();
+      handleErrorsAES();
   plaintext_len += len;
 
   /* Clean up */
