@@ -27,6 +27,7 @@ int dilithium1(int sock, int opt)
     unsigned char sm[MLEN + CRYPTO_BYTES_DILI];
     unsigned char pk[CRYPTO_PUBLICKEYBYTES_DILI];
     unsigned char sk[CRYPTO_SECRETKEYBYTES_DILI];
+    int t;
 
     // KeyGen and Sign
     // opt = 1 | send pk and cert with sign
@@ -44,7 +45,7 @@ int dilithium1(int sock, int opt)
       send(sock, sm, smlen, 0);
       send(sock, m, MLEN, 0);
 
-      read(sock, &flag, sizeof(flag));
+      t = read(sock, &flag, sizeof(flag));
 
       if (flag)
       {
@@ -56,10 +57,10 @@ int dilithium1(int sock, int opt)
     // Verification
     else
     {
-      read(sock, pk, CRYPTO_PUBLICKEYBYTES_DILI);
-      read(sock, &smlen, sizeof(smlen));
-      read(sock, sm, smlen);
-      read(sock, m, MLEN);
+      t = read(sock, pk, CRYPTO_PUBLICKEYBYTES_DILI);
+      t = read(sock, &smlen, sizeof(smlen));
+      t = read(sock, sm, smlen);
+      t = read(sock, m, MLEN);
 
       ret = crypto_sign_open(m2, &mlen, sm, smlen, pk); //Verification
 
@@ -117,7 +118,7 @@ int newhope1(int sock, int opt, unsigned char *ss)
       }
 
       send(sock, pk, CRYPTO_PUBLICKEYBYTES_NH, 0);
-      read(sock, ct, CRYPTO_CIPHERTEXTBYTES_NH);
+      t = read(sock, ct, CRYPTO_CIPHERTEXTBYTES_NH);
 
       ret = crypto_kem_dec_nh(ss, ct, sk); //Desencapsulate
 
@@ -134,7 +135,7 @@ int newhope1(int sock, int opt, unsigned char *ss)
     }
     else // Encapsulate
     {
-      read(sock, pk, CRYPTO_PUBLICKEYBYTES_NH);
+      t = read(sock, pk, CRYPTO_PUBLICKEYBYTES_NH);
 
       ret = crypto_kem_enc_nh(ct, ss, pk); // Encapsulate
 
