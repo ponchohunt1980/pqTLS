@@ -113,7 +113,7 @@ int newhope1(int sock, int opt, unsigned char *ss)
           strcpy(buffer, "Desencapsultaion failed");
           flag = 1;
           send(sock, buffer, strlen(buffer), 0);
-          return;
+          return flag;
       }
 
       send(sock, pk, CRYPTO_PUBLICKEYBYTES_NH, 0);

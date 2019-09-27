@@ -1,5 +1,6 @@
 // Client
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
@@ -27,7 +28,8 @@ int main(int argc, char const *argv[])
     }
 
     memcpy(opt, argv[1], strlen(argv[1]));
-    memcpy(opt2, argv[2], strlen(argv[2]));
+    //memcpy(opt2, argv[2], strlen(argv[2]));
+    opt2 = atoi(argv[2]);
 
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {

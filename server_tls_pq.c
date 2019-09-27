@@ -21,6 +21,7 @@ int main(int argc, char const *argv[])
     int optval = 1; 
     int addrlen = sizeof(address); 
     char opt[NSB]; 
+    int opt2;
        
     // Creating socket file descriptor 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) 
@@ -67,7 +68,7 @@ int main(int argc, char const *argv[])
         lenval = read(new_socket, opt, NSB); 
         opt[lenval] = '\0'; 
 
-        TLS(sock, opt, opt2, FCLIENT); //TLS func -> pq.c
+        TLS(new_socket, opt, opt2, FSERVER); //TLS func -> pq.c
 
         fflush(stdout);
         opt[0] = '\0';
