@@ -180,8 +180,8 @@ void symmetric_enc_dec(int sock, int flag, unsigned char *ss, unsigned char *msg
   /* Buffer for the decrypted text */
   unsigned char decryptedtext[BS];
 
-  BIO_dump_fp (stdout, (const char *)ss, strlen(ss));
-/*
+  //BIO_dump_fp (stdout, (const char *)ss, strlen(ss));
+
   // Server
   if (flag)
   {
@@ -207,7 +207,7 @@ void symmetric_enc_dec(int sock, int flag, unsigned char *ss, unsigned char *msg
 
     send(sock, ciphertext, strlen(ciphertext), 0);
   }
-*/
+  
   return;
 }
 /****** AES <- ******/
@@ -220,12 +220,13 @@ void safe_channel(int sock, int flag)
   { return; }
 
   // File or message
-  unsigned char msg[NBYTES] = "Hola mundo (client)";
+  unsigned char msg[NBYTES];;
 
   if (flag == 0)
   {
     // Message 
-    randombytes(msg, BS);
+    //randombytes(msg, BS);
+    memcpy(msg, "Hola mundo (client)");
   }
 
   symmetric_enc_dec(sock, flag, ss, msg);  
