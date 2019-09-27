@@ -106,7 +106,7 @@ int newhope1(int sock, int opt, unsigned char *ss)
     //KeyGen and Desencapsulate (server)
     if (opt)
     {
-      ret = crypto_kem_keypair(pk, sk); //KeyGen
+      ret = crypto_kem_keypair_nh(pk, sk); //KeyGen
 
       if(ret)
       {
@@ -119,7 +119,7 @@ int newhope1(int sock, int opt, unsigned char *ss)
       send(sock, pk, CRYPTO_PUBLICKEYBYTES_NH, 0);
       read(sock, ct, CRYPTO_CIPHERTEXTBYTES_NH);
 
-      ret = crypto_kem_dec(ss, ct, sk); //Desencapsulate
+      ret = crypto_kem_dec_nh(ss, ct, sk); //Desencapsulate
 
       if(ret)
       {
@@ -136,7 +136,7 @@ int newhope1(int sock, int opt, unsigned char *ss)
     {
       read(sock, pk, CRYPTO_PUBLICKEYBYTES_NH);
 
-      ret = crypto_kem_enc(ct, ss, pk); // Encapsulate
+      ret = crypto_kem_enc_nh(ct, ss, pk); // Encapsulate
 
       if(ret)
       {
