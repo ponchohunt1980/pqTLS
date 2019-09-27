@@ -20,8 +20,8 @@ int main(void)
   int ret;
   unsigned long long j, mlen, smlen;
   unsigned char m[MLEN];
-  unsigned char sm[MLEN + CRYPTO_BYTES];
-  unsigned char m2[MLEN + CRYPTO_BYTES];
+  unsigned char sm[MLEN + CRYPTO_BYTES_DILI];
+  unsigned char m2[MLEN + CRYPTO_BYTES_DILI];
   unsigned char pk[CRYPTO_PUBLICKEYBYTES];
   unsigned char sk[CRYPTO_SECRETKEYBYTES];
   unsigned long long tkeygen[NTESTS], tsign[NTESTS], tverify[NTESTS];
@@ -82,7 +82,7 @@ int main(void)
 
     randombytes((unsigned char *) &j, sizeof(j));
     randombytes(m2, 1);
-    sm[j % CRYPTO_BYTES] += 1 + (m2[0] % 255);
+    sm[j % CRYPTO_BYTES_DILI] += 1 + (m2[0] % 255);
     ret = crypto_sign_open(m2, &mlen, sm, smlen, pk);
     if(!ret) {
       printf("Trivial forgeries possible\n");

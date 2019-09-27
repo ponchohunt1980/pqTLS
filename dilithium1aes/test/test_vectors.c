@@ -11,7 +11,7 @@
 int main(void) {
   unsigned int i, j, k, l;
   unsigned char seed[CRHBYTES];
-  unsigned char buf[CRYPTO_BYTES];
+  unsigned char buf[CRYPTO_BYTES_DILI];
   poly c, tmp;
   polyvecl s, y, mat[K];
   polyveck w, w1, w0, t1, t0, h;
