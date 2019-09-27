@@ -92,6 +92,7 @@ int decrypt(unsigned char *ciphertext, int ciphertext_len, unsigned char *key,
    * Finalise the decryption. Further plaintext bytes may be written at
    * this stage.
    */
+  printf("l: %d %s\n", len, ciphertext);
   if(1 != EVP_DecryptFinal_ex(ctx, plaintext + len, &len))
       handleErrorsAES();
   plaintext_len += len;
