@@ -207,7 +207,7 @@ void symmetric_enc_dec(int sock, int flag, unsigned char *ss, unsigned char *msg
 
     send(sock, ciphertext, strlen(ciphertext), 0);
   }
-  
+
   return;
 }
 /****** AES <- ******/
@@ -226,7 +226,7 @@ void safe_channel(int sock, int flag)
   {
     // Message 
     //randombytes(msg, BS);
-    memcpy(msg, "Hola mundo (client)");
+    strcpy(msg, "Hola mundo (client)");
   }
 
   symmetric_enc_dec(sock, flag, ss, msg);  
