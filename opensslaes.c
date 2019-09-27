@@ -51,7 +51,7 @@ void encrypt(unsigned char *plaintext, int plaintext_len, unsigned char *key,
   /* Clean up */
   EVP_CIPHER_CTX_free(ctx);
 
-  printf("l: %d %s\n", len, ciphertext);
+  printf("l: %d %s\n", ciphertext_len, ciphertext);
 
   //return ciphertext_len;
   return;
@@ -93,7 +93,7 @@ int decrypt(unsigned char *ciphertext, int ciphertext_len, unsigned char *key,
    * Finalise the decryption. Further plaintext bytes may be written at
    * this stage.
    */
-  printf("l: %d %s\n", len, ciphertext);
+  printf("l: %d %s\n", plaintext_len, ciphertext);
   if(1 != EVP_DecryptFinal_ex(ctx, plaintext + len, &len))
       handleErrorsAES();
   plaintext_len += len;
