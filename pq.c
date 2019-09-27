@@ -194,7 +194,7 @@ void symmetric_enc_dec(int sock, int flag, unsigned char *ss, unsigned char *msg
   else // client
   {
     // Message 
-    randombytes(msg, BS);
+    randombytes(msg, NBYTES);
 
     /* Encrypt the plaintext */
     encrypt(msg, strlen(msg), key, iv, ciphertext);
