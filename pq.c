@@ -235,7 +235,7 @@ void TLS(int sock, char *opt, int opt2, int flag)
   }
   else if (opt2 == 1 || flag == 0)//verificacion server cert
   {
-    if (dilithium(sock, flag))
+    if (dilithium1(sock, flag))
     {
       return;
     }
@@ -243,7 +243,7 @@ void TLS(int sock, char *opt, int opt2, int flag)
   }
   else if (opt2 == 1 || flag ==1) // Both
   {
-    if (dilithium(sock, flag) || dilithium(sock, ~flag))
+    if (dilithium1(sock, flag) || dilithium1(sock, ~flag))
     {
       return;
     }
