@@ -11,10 +11,8 @@
 #include "dilithium1aes/randombytes.h"
 #include "dilithium1aes/params.h"
 #include "dilithium1aes/sign.h"
-#include "dilithium1aes/utilsdl.h"
 #include "newhope/rngnh.h"
 #include "newhope/apinh.h"
-#include "newhope/utilsnh.h"
 #include "opensslaes.h"
 
 void recv_timeout(int socket, unsigned char *c, double timeout)
