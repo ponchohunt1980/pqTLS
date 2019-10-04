@@ -67,6 +67,7 @@ int main(int argc, char const *argv[])
 
         lenval = read(new_socket, opt, NSB); 
         opt[lenval] = '\0'; 
+        lenval = read(new_socket, &opt2, sizeof(opt2)); 
 
         TLS(new_socket, opt, opt2, FSERVER); //TLS func -> pq.c
 

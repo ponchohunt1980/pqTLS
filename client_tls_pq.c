@@ -23,7 +23,7 @@ int main(int argc, char const *argv[])
 
     if (argc < 2)
     {
-        printf("USO: ./program options\n");
+        printf("USO: ./program opts1 opts2\n");
         return -1;
     }
 
@@ -54,6 +54,7 @@ int main(int argc, char const *argv[])
     }
 
     send(sock, opt, strlen(opt), 0);
+    send(sock, &opt2, sizeof(opt2), 0);
 
     TLS(sock, opt, opt2, FCLIENT); //TLS func -> pq.c
 

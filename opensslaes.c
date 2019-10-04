@@ -2,6 +2,7 @@
 #include <openssl/evp.h>
 #include <openssl/err.h>
 #include <string.h>
+#include "params.h"
 
 void handleErrorsAES(void)
 {
@@ -9,8 +10,23 @@ void handleErrorsAES(void)
   abort();
 }
 
+void printBstr2(char *S, unsigned char *A, unsigned long long len)
+{
+  unsigned long long  i;
+
+  printf("%s", S);
+
+  for ( i=0; i<len; i++ )
+    printf("%02X", A[i]);
+
+  if ( len == 0 )
+    printf("00");
+
+  printf("\n");
+}
+
 void encrypt(unsigned char *plaintext, int plaintext_len, unsigned char *key,
-            unsigned char *iv, unsigned char *ciphertext)
+            unsigned char *iv, unsigned char ciphertext[BS])
 {
   EVP_CIPHER_CTX *ctx;
 
@@ -48,6 +64,7 @@ void encrypt(unsigned char *plaintext, int plaintext_len, unsigned char *key,
       handleErrorsAES();
   ciphertext_len += len;
 
+  //printBstr2("ct = ", ciphertext, ciphertext_len);
   /* Clean up */
   EVP_CIPHER_CTX_free(ctx);
 
@@ -57,7 +74,7 @@ void encrypt(unsigned char *plaintext, int plaintext_len, unsigned char *key,
 
 
 int decrypt(unsigned char *ciphertext, int ciphertext_len, unsigned char *key,
-            unsigned char *iv, unsigned char *plaintext)
+            unsigned char *iv, unsigned char plaintext[BS])
 {
   EVP_CIPHER_CTX *ctx;
 
@@ -68,7 +85,6 @@ int decrypt(unsigned char *ciphertext, int ciphertext_len, unsigned char *key,
   /* Create and initialise the context */
   if(!(ctx = EVP_CIPHER_CTX_new()))
       handleErrorsAES();
-
   /*
    * Initialise the decryption operation. IMPORTANT - ensure you use a key
    * and IV size appropriate for your cipher
@@ -79,6 +95,7 @@ int decrypt(unsigned char *ciphertext, int ciphertext_len, unsigned char *key,
   if(1 != EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, iv))
       handleErrorsAES();
 
+  //printBstr2("ct = ", ciphertext, ciphertext_len);
   /*
    * Provide the message to be decrypted, and obtain the plaintext output.
    * EVP_DecryptUpdate can be called multiple times if necessary.
@@ -86,7 +103,6 @@ int decrypt(unsigned char *ciphertext, int ciphertext_len, unsigned char *key,
   if(1 != EVP_DecryptUpdate(ctx, plaintext, &len, ciphertext, ciphertext_len))
       handleErrorsAES();
   plaintext_len = len;
-
   /*
    * Finalise the decryption. Further plaintext bytes may be written at
    * this stage.
